@@ -93,13 +93,11 @@
         <aside>
             <div class="nav-links">
                 <h3 id="toc-title">جدول المحتويات</h3>
-                <ul id="toc-list">
-                    </ul>
+                <ul id="toc-list"></ul>
             </div>
         </aside>
 
-        <main id="content-area">
-            </main>
+        <main id="content-area"></main>
     </div>
 
     <script>
@@ -200,23 +198,18 @@
             }
         };
 
-        let currentLang = 'ar';
-
-        // Check URL params for language (e.g., /terms?lang=en)
-        const urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.get('lang') === 'en') {
-            currentLang = 'en';
-        }
+        // تحديد اللغة بناءً على المجلد الموجود في الرابط
+        let currentLang = window.location.pathname.includes('/en') ? 'en' : 'ar';
 
         function render() {
             const t = content[currentLang];
             document.documentElement.dir = t.dir;
+            document.documentElement.lang = currentLang; // تحديث كود اللغة للمتصفح
             document.querySelector('.lang-btn').textContent = t.btn;
             document.getElementById('home-link').textContent = t.home;
             document.getElementById('toc-title').textContent = t.tocTitle;
             document.getElementById('content-area').innerHTML = t.body;
 
-            // Render Table of Contents
             const ul = document.getElementById('toc-list');
             ul.innerHTML = '';
             t.toc.forEach(item => {
@@ -227,14 +220,15 @@
         }
 
         function toggleLang() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            // تحديث الرابط في المتصفح دون إعادة التحميل
-            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?lang=' + currentLang;
-            window.history.pushState({path:newUrl},'',newUrl);
-            render();
+            if (currentLang === 'ar') {
+                // الانتقال إلى المجلد الإنجليزي
+                window.location.href = '/terms/en/';
+            } else {
+                // العودة إلى المجلد العربي (الرئيسي)
+                window.location.href = '/terms/';
+            }
         }
 
-        // Initial Render
         render();
     </script>
 </body>
